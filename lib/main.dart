@@ -4,8 +4,14 @@ import 'package:ai_performance_intelligence_platfrom/core/router/app_router.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:flutter_web_plugins/url_strategy.dart'; // Import this
+import 'package:flutter/foundation.dart'; // Import for kIsWeb
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (kIsWeb) {
+    usePathUrlStrategy();
+  }
   await configureDependencies();
   runApp(const MyApp());
 }
