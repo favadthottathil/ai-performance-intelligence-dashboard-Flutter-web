@@ -1,8 +1,7 @@
 import 'package:ai_performance_intelligence_platfrom/core/di/injection.dart';
 import 'package:ai_performance_intelligence_platfrom/core/storage/token_storage.dart';
-import 'package:ai_performance_intelligence_platfrom/core/widgets/dashboard_entry.dart';
-import 'package:ai_performance_intelligence_platfrom/features/auth/presentation/screens/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -26,13 +25,9 @@ class _SplashPageState extends State<SplashPage> {
 
     if (mounted) {
       if (token != null && token.isNotEmpty) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const DashboardEntry()),
-        );
+        context.go('/dashboard/analytics');
       } else {
-        Navigator.of(
-          context,
-        ).pushReplacement(MaterialPageRoute(builder: (_) => LoginPage()));
+        context.go('/login');
       }
     }
   }
@@ -59,7 +54,7 @@ class _SplashPageState extends State<SplashPage> {
                 ],
               ),
               child: const Icon(
-                Icons.auto_awesome,
+                Icons.insights,
                 size: 64,
                 color: Color(0xFF3B82F6),
               ),

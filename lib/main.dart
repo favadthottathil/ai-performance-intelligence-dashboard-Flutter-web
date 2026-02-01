@@ -1,6 +1,6 @@
 import 'package:ai_performance_intelligence_platfrom/core/di/injection.dart';
 import 'package:ai_performance_intelligence_platfrom/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:ai_performance_intelligence_platfrom/features/auth/presentation/screens/splash_page.dart';
+import 'package:ai_performance_intelligence_platfrom/core/router/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,11 +18,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<AuthBloc>(
       create: (context) => sl<AuthBloc>(),
-      child: MaterialApp(
+      child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         title: 'AI Performance Platform',
         theme: _buildModernTheme(),
-        home: const SplashPage(),
+        routerConfig: AppRouter.router,
       ),
     );
   }

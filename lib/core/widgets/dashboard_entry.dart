@@ -7,21 +7,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DashboardEntry extends StatelessWidget {
-  const DashboardEntry({super.key});
+  final Widget child;
+  const DashboardEntry({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider<DashboardBloc>(
-          create: (_) =>
-              sl<DashboardBloc>()..add(LoadDashboard()),
+          create: (_) => sl<DashboardBloc>()..add(LoadDashboard()),
         ),
-        BlocProvider<AppsBloc>(
-          create: (_) => sl<AppsBloc>(),
-        ),
+        BlocProvider<AppsBloc>(create: (_) => sl<AppsBloc>()),
       ],
-      child: const DashboardPage(),
+      child: DashboardPage(child: child),
     );
   }
 }

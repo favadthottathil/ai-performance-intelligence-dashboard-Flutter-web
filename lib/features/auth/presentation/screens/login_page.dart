@@ -1,13 +1,11 @@
 import 'package:ai_performance_intelligence_platfrom/core/utils/snackbar_utils.dart';
-import 'package:ai_performance_intelligence_platfrom/core/widgets/dashboard_entry.dart';
 import 'package:ai_performance_intelligence_platfrom/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:ai_performance_intelligence_platfrom/features/auth/presentation/bloc/auth_event.dart';
 import 'package:ai_performance_intelligence_platfrom/features/auth/presentation/bloc/auth_state.dart';
-import 'package:ai_performance_intelligence_platfrom/features/auth/presentation/screens/signup_page.dart';
-// import 'package:ai_performance_intelligence_platfrom/features/auth/presentation/widgets/auth_layout.dart';
 import 'package:ai_performance_intelligence_platfrom/features/auth/presentation/widgets/password_filed.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -21,10 +19,7 @@ class LoginPage extends StatelessWidget {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => const DashboardEntry()),
-          );
+          context.go('/dashboard/analytics');
         }
         if (state is AuthFailure) {
           showErrorSnackBar(context, state.message);
@@ -98,7 +93,7 @@ class LoginPage extends StatelessWidget {
                     children: [
                       // Logo / Title area
                       const Icon(
-                        Icons.auto_awesome,
+                        Icons.insights,
                         size: 64,
                         color: Color(0xFF3B82F6),
                       ),
@@ -198,10 +193,7 @@ class LoginPage extends StatelessWidget {
                       const SizedBox(height: 24),
                       TextButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => SignupPage()),
-                          );
+                          context.go('/signup');
                         },
                         child: const Text('Don\'t have an account? Sign up'),
                       ),
