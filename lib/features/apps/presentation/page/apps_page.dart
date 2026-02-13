@@ -24,7 +24,7 @@ class _AppsPageState extends State<AppsPage> {
     final controller = TextEditingController();
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         backgroundColor: const Color(0xFF1E293B),
         title: const Text(
           'New Application',
@@ -40,7 +40,7 @@ class _AppsPageState extends State<AppsPage> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             style: TextButton.styleFrom(foregroundColor: Colors.white70),
             child: const Text('Cancel'),
           ),
@@ -50,7 +50,7 @@ class _AppsPageState extends State<AppsPage> {
                 context.read<AppsBloc>().add(
                   CreateAppRequested(controller.text),
                 );
-                Navigator.pop(context);
+                Navigator.pop(dialogContext);
               }
             },
             style: ElevatedButton.styleFrom(
@@ -75,7 +75,7 @@ class _AppsPageState extends State<AppsPage> {
         if (state is AppCreated) {
           showDialog(
             context: context,
-            builder: (_) => AlertDialog(
+            builder: (dialogContext) => AlertDialog(
               backgroundColor: const Color(0xFF1E293B),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(24),
@@ -179,7 +179,7 @@ class _AppsPageState extends State<AppsPage> {
               ),
               actions: [
                 TextButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () => Navigator.pop(dialogContext),
                   style: TextButton.styleFrom(
                     foregroundColor: const Color(0xFF3B82F6),
                     textStyle: const TextStyle(fontWeight: FontWeight.bold),
@@ -283,7 +283,7 @@ class _AppsPageState extends State<AppsPage> {
             ),
             const SizedBox(height: 24),
             const Text(
-              'No Apps Configured',
+              'Dashboard is Empty',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,

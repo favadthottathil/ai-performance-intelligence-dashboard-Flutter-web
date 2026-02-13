@@ -13,7 +13,14 @@ class AppsRemoteDataSource {
   }
 
   Future<List<AppModel>> getApps() async {
-    final res = await dio.get('/apps');
-    return (res.data as List).map((e) => AppModel.fromJson(e)).toList();
+    try {
+      final res = await dio.get('/apps');
+      return (res.data as List).map((e) => AppModel.fromJson(e)).toList();
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        return [];
+      }
+      rethrow;
+    }
   }
 }
