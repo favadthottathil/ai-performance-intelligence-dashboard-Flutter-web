@@ -9,7 +9,9 @@ class FrameDropChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (metrics.isEmpty) {
+    final validMetrics = metrics.where((m) => m.frameDrops > 0).toList();
+
+    if (validMetrics.isEmpty) {
       return const SizedBox(
         height: 200,
         child: Center(child: Text('No frame drop data')),
@@ -56,6 +58,8 @@ class FrameDropChart extends StatelessWidget {
             height: 250,
             child: BarChart(
               BarChartData(
+                alignment: BarChartAlignment.start,
+                groupsSpace: 12,
                 gridData: FlGridData(show: false),
                 borderData: FlBorderData(show: false),
                 titlesData: FlTitlesData(
@@ -74,11 +78,13 @@ class FrameDropChart extends StatelessWidget {
                       showTitles: true,
                       getTitlesWidget: (value, meta) {
                         if (value.toInt() >= 0 &&
-                            value.toInt() < metrics.length) {
+                            value.toInt() < validMetrics.length) {
                           return Padding(
                             padding: const EdgeInsets.only(top: 8),
                             child: Text(
-                              metrics[value.toInt()].screen.split(' ').first,
+                              validMetrics[value.toInt()].screen
+                                  .split(' ')
+                                  .first,
                               style: TextStyle(
                                 color: Colors.white.withOpacity(0.5),
                                 fontSize: 10,
@@ -91,7 +97,7 @@ class FrameDropChart extends StatelessWidget {
                     ),
                   ),
                 ),
-                barGroups: metrics.asMap().entries.map((entry) {
+                barGroups: validMetrics.asMap().entries.map((entry) {
                   final index = entry.key;
                   final metric = entry.value;
 

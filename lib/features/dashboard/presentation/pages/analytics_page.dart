@@ -59,10 +59,38 @@ class _DashboardContent extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
+              'Dashboard is Empty',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.white.withOpacity(0.9),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
               'No performance data collected yet',
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.white.withOpacity(0.5),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              constraints: const BoxConstraints(maxWidth: 500),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.white.withOpacity(0.1)),
+              ),
+              child: Text(
+                'Start sending performance metrics from your application using the API key to see analytics here.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.white.withOpacity(0.7),
+                  height: 1.5,
+                ),
               ),
             ),
           ],

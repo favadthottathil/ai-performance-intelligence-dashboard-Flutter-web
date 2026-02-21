@@ -52,15 +52,29 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
           ? (state as DashboardLoaded).tab
           : DashboardTab.analytics;
 
+      // Always emit DashboardLoaded, even if summary is empty
+      // The UI will handle the empty state with a friendly message
       emit(
         DashboardLoaded(
           summary: summary,
-          analysis: result['analysis'],
+          analysis: result['analysis'] ?? {},
           tab: currentTab,
         ),
       );
     } catch (e) {
-      emit(DashboardError(e.toString()));
+      // Check if the error is due to no data (404 or similar)
+      // If so, emit an empty DashboardLoaded instead of an error
+      if (e.toString().contains('404') ||
+          e.toString().toLowerCase().contains('no data') ||
+          e.toString().toLowerCase().contains('not found')) {
+        final currentTab = state is DashboardLoaded
+            ? (state as DashboardLoaded).tab
+            : DashboardTab.analytics;
+
+        emit(DashboardLoaded(summary: [], analysis: {}, tab: currentTab));
+      } else {
+        emit(DashboardError(e.toString()));
+      }
     }
   }
 }

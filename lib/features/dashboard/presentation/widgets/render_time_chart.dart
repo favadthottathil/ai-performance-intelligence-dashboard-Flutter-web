@@ -9,7 +9,9 @@ class RenderTimeChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (metrics.isEmpty) {
+    final validMetrics = metrics.where((m) => m.avgRenderTime > 0).toList();
+
+    if (validMetrics.isEmpty) {
       return const SizedBox(
         height: 200,
         child: Center(child: Text('No chart data available')),
@@ -31,12 +33,12 @@ class RenderTimeChart extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF3B82F6).withOpacity(0.1),
+                  color: const Color(0xFF06B6D4).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
                   Icons.timer_outlined,
-                  color: Color(0xFF3B82F6),
+                  color: Color(0xFF06B6D4),
                   size: 20,
                 ),
               ),
@@ -56,6 +58,8 @@ class RenderTimeChart extends StatelessWidget {
             height: 250,
             child: BarChart(
               BarChartData(
+                alignment: BarChartAlignment.start,
+                groupsSpace: 12,
                 gridData: FlGridData(show: false),
                 borderData: FlBorderData(show: false),
                 titlesData: FlTitlesData(
@@ -74,11 +78,13 @@ class RenderTimeChart extends StatelessWidget {
                       showTitles: true,
                       getTitlesWidget: (value, meta) {
                         if (value.toInt() >= 0 &&
-                            value.toInt() < metrics.length) {
+                            value.toInt() < validMetrics.length) {
                           return Padding(
                             padding: const EdgeInsets.only(top: 8),
                             child: Text(
-                              metrics[value.toInt()].screen.split(' ').first,
+                              validMetrics[value.toInt()].screen
+                                  .split(' ')
+                                  .first,
                               style: TextStyle(
                                 color: Colors.white.withOpacity(0.5),
                                 fontSize: 10,
@@ -91,7 +97,7 @@ class RenderTimeChart extends StatelessWidget {
                     ),
                   ),
                 ),
-                barGroups: metrics.asMap().entries.map((entry) {
+                barGroups: validMetrics.asMap().entries.map((entry) {
                   final index = entry.key;
                   final metric = entry.value;
 
@@ -103,15 +109,15 @@ class RenderTimeChart extends StatelessWidget {
                         width: 16,
                         gradient: LinearGradient(
                           colors: [
-                            const Color(0xFF3B82F6),
-                            const Color(0xFF3B82F6).withOpacity(0.5),
+                            const Color(0xFF06B6D4), // Cyan 500
+                            const Color(0xFF22D3EE), // Cyan 400
                           ],
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
                         ),
                         borderRadius: BorderRadius.circular(4),
                         backDrawRodData: BackgroundBarChartRodData(
-                          show: true,
+                          show: metric.avgRenderTime > 0,
                           toY: 50, // Benchmark line
                           color: Colors.white.withOpacity(0.05),
                         ),
