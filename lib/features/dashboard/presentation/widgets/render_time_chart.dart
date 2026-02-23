@@ -9,6 +9,8 @@ class RenderTimeChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
     final validMetrics = metrics.where((m) => m.avgRenderTime > 0).toList();
 
     if (validMetrics.isEmpty) {
@@ -55,7 +57,7 @@ class RenderTimeChart extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           SizedBox(
-            height: 250,
+            height: isMobile ? 180 : 250,
             child: BarChart(
               BarChartData(
                 alignment: BarChartAlignment.start,
@@ -97,16 +99,35 @@ class RenderTimeChart extends StatelessWidget {
                     ),
                   ),
                 ),
+                barTouchData: BarTouchData(
+                  enabled: false,
+                  touchTooltipData: BarTouchTooltipData(
+                    getTooltipColor: (_) => Colors.transparent,
+                    tooltipPadding: EdgeInsets.zero,
+                    tooltipMargin: 6,
+                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                      return BarTooltipItem(
+                        '${rod.toY.toStringAsFixed(1)}ms',
+                        const TextStyle(
+                          color: Color(0xFF06B6D4),
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    },
+                  ),
+                ),
                 barGroups: validMetrics.asMap().entries.map((entry) {
                   final index = entry.key;
                   final metric = entry.value;
 
                   return BarChartGroupData(
                     x: index,
+                    showingTooltipIndicators: [0],
                     barRods: [
                       BarChartRodData(
                         toY: metric.avgRenderTime.toDouble(),
-                        width: 16,
+                        width: isMobile ? 10 : 16,
                         gradient: LinearGradient(
                           colors: [
                             const Color(0xFF06B6D4), // Cyan 500

@@ -9,6 +9,8 @@ class FrameDropChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
     final validMetrics = metrics.where((m) => m.frameDrops > 0).toList();
 
     if (validMetrics.isEmpty) {
@@ -55,7 +57,7 @@ class FrameDropChart extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           SizedBox(
-            height: 250,
+            height: isMobile ? 180 : 250,
             child: BarChart(
               BarChartData(
                 alignment: BarChartAlignment.start,
@@ -97,12 +99,31 @@ class FrameDropChart extends StatelessWidget {
                     ),
                   ),
                 ),
+                barTouchData: BarTouchData(
+                  enabled: false,
+                  touchTooltipData: BarTouchTooltipData(
+                    getTooltipColor: (_) => Colors.transparent,
+                    tooltipPadding: EdgeInsets.zero,
+                    tooltipMargin: 6,
+                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                      return BarTooltipItem(
+                        '${rod.toY.toInt()} drops',
+                        const TextStyle(
+                          color: Colors.redAccent,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    },
+                  ),
+                ),
                 barGroups: validMetrics.asMap().entries.map((entry) {
                   final index = entry.key;
                   final metric = entry.value;
 
                   return BarChartGroupData(
                     x: index,
+                    showingTooltipIndicators: [0],
                     barRods: [
                       BarChartRodData(
                         toY: metric.frameDrops.toDouble(),
@@ -114,7 +135,7 @@ class FrameDropChart extends StatelessWidget {
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
                         ),
-                        width: 16,
+                        width: isMobile ? 10 : 16,
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ],

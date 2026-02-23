@@ -42,7 +42,9 @@ class _DashboardContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isWide = MediaQuery.of(context).size.width > 1000;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isWide = screenWidth > 600;
+    final horizontalPadding = screenWidth < 600 ? 12.0 : 24.0;
 
     final analysis = state.analysis;
     final severity = analysis['severity'];
@@ -99,7 +101,10 @@ class _DashboardContent extends StatelessWidget {
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.symmetric(
+        horizontal: horizontalPadding,
+        vertical: 16,
+      ),
       child: Column(
         children: [
           // KPIs / Severity Header
@@ -175,16 +180,41 @@ class _InsightsPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     List<String> parseList(dynamic list) {
       if (list is! List) return [];
-      return list.map((e) {
-        if (e is String) return e;
-        if (e is Map) {
-          return e['message']?.toString() ??
-              e['description']?.toString() ??
-              e['text']?.toString() ??
-              e.toString();
-        }
-        return e.toString();
-      }).toList();
+      return list
+          .map((e) {
+            if (e is String) return e;
+            if (e is Map) {
+              // Extract screen name cleanly (no braces)
+              final screen = e['screen']?.toString().trim() ?? '';
+
+              // Pick the best descriptive text available
+              final body =
+                  (e['message']?.toString() ??
+                          e['description']?.toString() ??
+                          e['suggestion']?.toString() ??
+                          e['action']?.toString() ??
+                          e['text']?.toString() ??
+                          '')
+                      .trim();
+
+              if (screen.isNotEmpty && body.isNotEmpty) {
+                return '$screen: $body';
+              } else if (body.isNotEmpty) {
+                return body;
+              } else if (screen.isNotEmpty) {
+                return screen;
+              }
+              // Last resort: join all non-null values sensibly
+              return e.values
+                  .where((v) => v != null)
+                  .map((v) => v.toString().trim())
+                  .where((s) => s.isNotEmpty)
+                  .join(' — ');
+            }
+            return e.toString();
+          })
+          .where((s) => s.isNotEmpty)
+          .toList();
     }
 
     final issues = parseList(analysis['issues']);
