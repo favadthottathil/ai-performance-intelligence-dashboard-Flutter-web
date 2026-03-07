@@ -2,6 +2,8 @@ import 'package:ai_performance_intelligence_platfrom/features/dashboard/presenta
 import 'package:ai_performance_intelligence_platfrom/features/dashboard/presentation/bloc/dashboard_state.dart';
 import 'package:ai_performance_intelligence_platfrom/features/dashboard/presentation/widgets/frame_drop_chart.dart';
 import 'package:ai_performance_intelligence_platfrom/features/dashboard/presentation/widgets/render_time_chart.dart';
+import 'package:ai_performance_intelligence_platfrom/features/dashboard/presentation/widgets/api_latency_chart.dart';
+import 'package:ai_performance_intelligence_platfrom/features/dashboard/presentation/widgets/crash_count_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -122,6 +124,10 @@ class _DashboardContent extends StatelessWidget {
                       RenderTimeChart(metrics: state.summary),
                       const SizedBox(height: 24),
                       FrameDropChart(metrics: state.summary),
+                      const SizedBox(height: 24),
+                      ApiLatencyChart(metrics: state.summary),
+                      const SizedBox(height: 24),
+                      CrashCountChart(metrics: state.summary),
                     ],
                   ),
                 ),
@@ -135,6 +141,10 @@ class _DashboardContent extends StatelessWidget {
                 RenderTimeChart(metrics: state.summary),
                 const SizedBox(height: 24),
                 FrameDropChart(metrics: state.summary),
+                const SizedBox(height: 24),
+                ApiLatencyChart(metrics: state.summary),
+                const SizedBox(height: 24),
+                CrashCountChart(metrics: state.summary),
                 const SizedBox(height: 24),
                 _InsightsPanel(analysis),
               ],

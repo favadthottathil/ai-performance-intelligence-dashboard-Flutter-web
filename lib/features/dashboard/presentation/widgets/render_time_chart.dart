@@ -12,6 +12,13 @@ class RenderTimeChart extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 600;
     final validMetrics = metrics.where((m) => m.avgRenderTime > 0).toList();
+    final double maxRenderTime = validMetrics.isEmpty
+        ? 100.0
+        : validMetrics
+              .map((m) => m.avgRenderTime)
+              .reduce((a, b) => a > b ? a : b)
+              .toDouble();
+    final double maxY = maxRenderTime * 1.2;
 
     if (validMetrics.isEmpty) {
       return const SizedBox(
@@ -45,12 +52,14 @@ class RenderTimeChart extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              const Text(
-                'Render Performance (ms)',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+              const Expanded(
+                child: Text(
+                  'Render Performance (ms)',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],
@@ -60,8 +69,9 @@ class RenderTimeChart extends StatelessWidget {
             height: isMobile ? 180 : 250,
             child: BarChart(
               BarChartData(
+                maxY: maxY,
                 alignment: BarChartAlignment.start,
-                groupsSpace: 12,
+                groupsSpace: 24,
                 gridData: FlGridData(show: false),
                 borderData: FlBorderData(show: false),
                 titlesData: FlTitlesData(
@@ -78,18 +88,34 @@ class RenderTimeChart extends StatelessWidget {
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
+                      reservedSize: 60,
+                      interval: 1,
                       getTitlesWidget: (value, meta) {
                         if (value.toInt() >= 0 &&
                             value.toInt() < validMetrics.length) {
+                          final originalTitle = validMetrics[value.toInt()]
+                              .screen
+                              .split(' ')
+                              .first;
+                          String displayTitle = originalTitle;
+                          if (originalTitle.length > 5) {
+                            displayTitle = '${originalTitle.substring(0, 4)}..';
+                          }
                           return Padding(
-                            padding: const EdgeInsets.only(top: 8),
-                            child: Text(
-                              validMetrics[value.toInt()].screen
-                                  .split(' ')
-                                  .first,
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.5),
-                                fontSize: 10,
+                            padding: const EdgeInsets.only(top: 16),
+                            child: Tooltip(
+                              message: originalTitle,
+                              preferBelow: false,
+                              child: SizedBox(
+                                width: 32, // limit width explicitly
+                                child: Text(
+                                  displayTitle,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white.withOpacity(0.5),
+                                    fontSize: 10,
+                                  ),
+                                ),
                               ),
                             ),
                           );
@@ -103,8 +129,8 @@ class RenderTimeChart extends StatelessWidget {
                   enabled: false,
                   touchTooltipData: BarTouchTooltipData(
                     getTooltipColor: (_) => Colors.transparent,
-                    tooltipPadding: EdgeInsets.zero,
-                    tooltipMargin: 6,
+                    tooltipPadding: const EdgeInsets.symmetric(vertical: 4),
+                    tooltipMargin: 12,
                     getTooltipItem: (group, groupIndex, rod, rodIndex) {
                       return BarTooltipItem(
                         '${rod.toY.toStringAsFixed(1)}ms',

@@ -2,28 +2,32 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import '../../data/models/screen_metric_model.dart';
 
-class FrameDropChart extends StatelessWidget {
+class CrashCountChart extends StatelessWidget {
   final List<ScreenMetricModel> metrics;
 
-  const FrameDropChart({super.key, required this.metrics});
+  const CrashCountChart({super.key, required this.metrics});
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 600;
-    final validMetrics = metrics.where((m) => m.frameDrops > 0).toList();
-    final double maxFrameDrops = validMetrics.isEmpty
-        ? 100.0
-        : validMetrics
-              .map((m) => m.frameDrops)
-              .reduce((a, b) => a > b ? a : b)
-              .toDouble();
-    final double maxY = maxFrameDrops * 1.2;
+
+    // Check if any screens actually have crash data or just show all if none
+    final hasAnyCrashes = metrics.any((m) => m.crashCount > 0);
+    // filter so we do not plot endless zeros if they have none
+    final validMetrics = hasAnyCrashes
+        ? metrics.where((m) => m.crashCount > 0).toList()
+        : metrics.take(5).toList();
+
+    final int maxCrashes = validMetrics.isEmpty
+        ? 10
+        : validMetrics.map((m) => m.crashCount).reduce((a, b) => a > b ? a : b);
+    final double maxY = maxCrashes * 1.5;
 
     if (validMetrics.isEmpty) {
       return const SizedBox(
         height: 200,
-        child: Center(child: Text('No frame drop data')),
+        child: Center(child: Text('No Crash data available')),
       );
     }
 
@@ -42,19 +46,19 @@ class FrameDropChart extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.redAccent.withOpacity(0.1),
+                  color: const Color(0xFFEF4444).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
-                  Icons.warning_amber_rounded,
-                  color: Colors.redAccent,
+                  Icons.report_gmailerrorred_outlined,
+                  color: Color(0xFFEF4444),
                   size: 20,
                 ),
               ),
               const SizedBox(width: 12),
               const Expanded(
                 child: Text(
-                  'Frame Drops Impact',
+                  'Runtime Crashes',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -69,7 +73,7 @@ class FrameDropChart extends StatelessWidget {
             height: isMobile ? 180 : 250,
             child: BarChart(
               BarChartData(
-                maxY: maxY,
+                maxY: maxY <= 0 ? 5 : maxY, // default height
                 alignment: BarChartAlignment.start,
                 groupsSpace: 24,
                 gridData: FlGridData(show: false),
@@ -133,9 +137,9 @@ class FrameDropChart extends StatelessWidget {
                     tooltipMargin: 12,
                     getTooltipItem: (group, groupIndex, rod, rodIndex) {
                       return BarTooltipItem(
-                        '${rod.toY.toInt()} drops',
+                        '${rod.toY.toInt()}',
                         const TextStyle(
-                          color: Colors.redAccent,
+                          color: Color(0xFFEF4444),
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
@@ -152,17 +156,22 @@ class FrameDropChart extends StatelessWidget {
                     showingTooltipIndicators: [0],
                     barRods: [
                       BarChartRodData(
-                        toY: metric.frameDrops.toDouble(),
+                        toY: metric.crashCount.toDouble(),
+                        width: isMobile ? 10 : 16,
                         gradient: LinearGradient(
                           colors: [
-                            Colors.redAccent,
-                            Colors.redAccent.withOpacity(0.5),
+                            const Color(0xFFEF4444), // Red 500
+                            const Color(0xFFF87171), // Red 400
                           ],
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
                         ),
-                        width: isMobile ? 10 : 16,
                         borderRadius: BorderRadius.circular(4),
+                        backDrawRodData: BackgroundBarChartRodData(
+                          show: true,
+                          toY: maxY <= 0 ? 5 : maxY, // Benchmark line
+                          color: Colors.white.withOpacity(0.05),
+                        ),
                       ),
                     ],
                   );

@@ -2,28 +2,28 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import '../../data/models/screen_metric_model.dart';
 
-class FrameDropChart extends StatelessWidget {
+class ApiLatencyChart extends StatelessWidget {
   final List<ScreenMetricModel> metrics;
 
-  const FrameDropChart({super.key, required this.metrics});
+  const ApiLatencyChart({super.key, required this.metrics});
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 600;
-    final validMetrics = metrics.where((m) => m.frameDrops > 0).toList();
-    final double maxFrameDrops = validMetrics.isEmpty
+    final validMetrics = metrics.where((m) => m.avgApiLatency > 0).toList();
+    final double maxLatency = validMetrics.isEmpty
         ? 100.0
         : validMetrics
-              .map((m) => m.frameDrops)
+              .map((m) => m.avgApiLatency)
               .reduce((a, b) => a > b ? a : b)
               .toDouble();
-    final double maxY = maxFrameDrops * 1.2;
+    final double maxY = maxLatency * 1.2;
 
     if (validMetrics.isEmpty) {
       return const SizedBox(
         height: 200,
-        child: Center(child: Text('No frame drop data')),
+        child: Center(child: Text('No API metrics data available')),
       );
     }
 
@@ -42,19 +42,19 @@ class FrameDropChart extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.redAccent.withOpacity(0.1),
+                  color: const Color(0xFFF59E0B).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
-                  Icons.warning_amber_rounded,
-                  color: Colors.redAccent,
+                  Icons.network_check_outlined,
+                  color: Color(0xFFF59E0B),
                   size: 20,
                 ),
               ),
               const SizedBox(width: 12),
               const Expanded(
                 child: Text(
-                  'Frame Drops Impact',
+                  'API Latency (ms)',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -133,9 +133,9 @@ class FrameDropChart extends StatelessWidget {
                     tooltipMargin: 12,
                     getTooltipItem: (group, groupIndex, rod, rodIndex) {
                       return BarTooltipItem(
-                        '${rod.toY.toInt()} drops',
+                        '${rod.toY.toStringAsFixed(1)}ms',
                         const TextStyle(
-                          color: Colors.redAccent,
+                          color: Color(0xFFF59E0B),
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
@@ -152,17 +152,22 @@ class FrameDropChart extends StatelessWidget {
                     showingTooltipIndicators: [0],
                     barRods: [
                       BarChartRodData(
-                        toY: metric.frameDrops.toDouble(),
+                        toY: metric.avgApiLatency.toDouble(),
+                        width: isMobile ? 10 : 16,
                         gradient: LinearGradient(
                           colors: [
-                            Colors.redAccent,
-                            Colors.redAccent.withOpacity(0.5),
+                            const Color(0xFFF59E0B), // Amber 500
+                            const Color(0xFFFCD34D), // Amber 300
                           ],
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
                         ),
-                        width: isMobile ? 10 : 16,
                         borderRadius: BorderRadius.circular(4),
+                        backDrawRodData: BackgroundBarChartRodData(
+                          show: metric.avgApiLatency > 0,
+                          toY: 500, // Benchmark line
+                          color: Colors.white.withOpacity(0.05),
+                        ),
                       ),
                     ],
                   );
