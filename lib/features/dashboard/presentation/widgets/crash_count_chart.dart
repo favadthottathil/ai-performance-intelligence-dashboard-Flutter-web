@@ -167,11 +167,8 @@ class CrashCountChart extends StatelessWidget {
                           end: Alignment.topCenter,
                         ),
                         borderRadius: BorderRadius.circular(4),
-                        backDrawRodData: BackgroundBarChartRodData(
-                          show: true,
-                          toY: maxY <= 0 ? 5 : maxY, // Benchmark line
-                          color: Colors.white.withOpacity(0.05),
-                        ),
+                        // backDrawRodData removed locally to prevent the high unselected line
+                        backDrawRodData: BackgroundBarChartRodData(show: false),
                       ),
                     ],
                   );
