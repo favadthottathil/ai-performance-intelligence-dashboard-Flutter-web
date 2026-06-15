@@ -1,5 +1,6 @@
-import 'package:ai_performance_intelligence_platfrom/features/dashboard/data/models/screen_metric_model.dart';
-import 'package:ai_performance_intelligence_platfrom/features/dashboard/presentation/bloc/dashbaord_tab.dart';
+import 'package:ai_performance_intelligence_platform/features/dashboard/data/models/analysis_result.dart';
+import 'package:ai_performance_intelligence_platform/features/dashboard/data/models/screen_metric_model.dart';
+import 'package:ai_performance_intelligence_platform/features/dashboard/presentation/bloc/dashbaord_tab.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class DashboardState extends Equatable {
@@ -14,7 +15,7 @@ class DashboardLoading extends DashboardState {}
 class DashboardLoaded extends DashboardState {
   final List<ScreenMetricModel> summary;
 
-  final Map<String, dynamic> analysis;
+  final AnalysisResult analysis;
 
   final DashboardTab tab;
 

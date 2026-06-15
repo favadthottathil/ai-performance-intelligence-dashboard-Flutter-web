@@ -1,8 +1,9 @@
-import 'package:ai_performance_intelligence_platfrom/core/di/injection.dart';
-import 'package:ai_performance_intelligence_platfrom/core/storage/token_storage.dart';
-import 'package:ai_performance_intelligence_platfrom/features/dashboard/presentation/bloc/dashboard_bloc.dart';
-import 'package:ai_performance_intelligence_platfrom/features/dashboard/presentation/bloc/dashboard_event.dart';
-import 'package:ai_performance_intelligence_platfrom/features/dashboard/presentation/widgets/dashboard_sidebar.dart';
+import 'package:ai_performance_intelligence_platform/core/di/injection.dart';
+import 'package:ai_performance_intelligence_platform/core/storage/token_storage.dart';
+import 'package:ai_performance_intelligence_platform/core/widgets/live_indicator.dart';
+import 'package:ai_performance_intelligence_platform/features/dashboard/presentation/bloc/dashboard_bloc.dart';
+import 'package:ai_performance_intelligence_platform/features/dashboard/presentation/bloc/dashboard_event.dart';
+import 'package:ai_performance_intelligence_platform/features/dashboard/presentation/widgets/dashboard_sidebar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -61,6 +62,8 @@ class DashboardPage extends StatelessWidget {
             : null,
         automaticallyImplyLeading: false,
         actions: [
+          if (!isMobile) const LiveIndicator(),
+          if (!isMobile) const SizedBox(width: 12),
           IconButton(
             onPressed: () {
               context.read<DashboardBloc>().add(RefreshDashboard());
@@ -76,6 +79,7 @@ class DashboardPage extends StatelessWidget {
               }
             },
           ),
+          const SizedBox(width: 8),
         ],
       ),
 

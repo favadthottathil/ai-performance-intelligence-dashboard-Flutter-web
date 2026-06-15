@@ -1,8 +1,9 @@
-import 'package:ai_performance_intelligence_platfrom/core/di/injection.dart';
-import 'package:ai_performance_intelligence_platfrom/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:ai_performance_intelligence_platfrom/core/router/app_router.dart';
+import 'package:ai_performance_intelligence_platform/core/di/injection.dart';
+import 'package:ai_performance_intelligence_platform/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:ai_performance_intelligence_platform/core/router/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:flutter_web_plugins/url_strategy.dart'; // Import this
 import 'package:flutter/foundation.dart'; // Import for kIsWeb
@@ -35,8 +36,14 @@ class MyApp extends StatelessWidget {
 
   ThemeData _buildModernTheme() {
     final base = ThemeData.dark();
+    final textTheme = GoogleFonts.interTextTheme(base.textTheme).apply(
+      bodyColor: Colors.white,
+      displayColor: Colors.white,
+    );
+
     return base.copyWith(
       scaffoldBackgroundColor: const Color(0xFF0F172A), // Dark slate blue
+      textTheme: textTheme,
       colorScheme: const ColorScheme.dark(
         primary: Color(0xFF3B82F6), // Neon Blue
         secondary: Color(0xFF8B5CF6), // Violet
@@ -72,7 +79,7 @@ class MyApp extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           padding: const EdgeInsets.symmetric(vertical: 16),
-          textStyle: const TextStyle(
+          textStyle: GoogleFonts.inter(
             fontSize: 16,
             fontWeight: FontWeight.bold,
             letterSpacing: 0.5,

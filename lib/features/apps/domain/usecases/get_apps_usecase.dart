@@ -1,4 +1,4 @@
-import 'package:ai_performance_intelligence_platfrom/features/apps/domain/repostiories/app_repository.dart';
+import 'package:ai_performance_intelligence_platform/features/apps/domain/repostiories/app_repository.dart';
 import 'package:injectable/injectable.dart';
 import '../../data/models/app_model.dart';
 

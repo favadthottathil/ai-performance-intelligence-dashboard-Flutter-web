@@ -1,11 +1,11 @@
-import 'package:ai_performance_intelligence_platfrom/core/di/injection.dart';
-import 'package:ai_performance_intelligence_platfrom/core/storage/token_storage.dart';
-import 'package:ai_performance_intelligence_platfrom/core/widgets/dashboard_entry.dart';
-import 'package:ai_performance_intelligence_platfrom/features/apps/presentation/page/apps_page.dart';
-import 'package:ai_performance_intelligence_platfrom/features/auth/presentation/screens/login_page.dart';
-import 'package:ai_performance_intelligence_platfrom/features/auth/presentation/screens/signup_page.dart';
-import 'package:ai_performance_intelligence_platfrom/features/auth/presentation/screens/splash_page.dart';
-import 'package:ai_performance_intelligence_platfrom/features/dashboard/presentation/pages/analytics_page.dart';
+import 'package:ai_performance_intelligence_platform/core/di/injection.dart';
+import 'package:ai_performance_intelligence_platform/core/storage/token_storage.dart';
+import 'package:ai_performance_intelligence_platform/core/widgets/dashboard_entry.dart';
+import 'package:ai_performance_intelligence_platform/features/apps/presentation/page/apps_page.dart';
+import 'package:ai_performance_intelligence_platform/features/auth/presentation/screens/login_page.dart';
+import 'package:ai_performance_intelligence_platform/features/auth/presentation/screens/signup_page.dart';
+import 'package:ai_performance_intelligence_platform/features/auth/presentation/screens/splash_page.dart';
+import 'package:ai_performance_intelligence_platform/features/dashboard/presentation/pages/analytics_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

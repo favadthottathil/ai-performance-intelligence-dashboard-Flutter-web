@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/apps_bloc.dart';
 import '../bloc/apps_event.dart';
 import '../bloc/apps_state.dart';
-import 'package:ai_performance_intelligence_platfrom/core/utils/snackbar_utils.dart';
+import '../../data/models/app_model.dart';
+import 'package:ai_performance_intelligence_platform/core/utils/snackbar_utils.dart';
+import 'package:ai_performance_intelligence_platform/core/widgets/hover_scale.dart';
 
 class AppsPage extends StatefulWidget {
   const AppsPage({super.key});
@@ -314,71 +316,112 @@ class _AppsPageState extends State<AppsPage> {
     );
   }
 
-  Widget _buildAppsList(List<dynamic> apps) {
-    return ListView.separated(
-      itemCount: apps.length,
-      separatorBuilder: (context, index) => const SizedBox(height: 16),
-      itemBuilder: (context, index) {
-        final app = apps[index];
-        return Container(
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withOpacity(0.1)),
+  Widget _buildAppsList(List<AppModel> apps) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+        int columns = 1;
+        if (width >= 1100) {
+          columns = 3;
+        } else if (width >= 700) {
+          columns = 2;
+        }
+
+        if (columns == 1) {
+          return ListView.separated(
+            itemCount: apps.length,
+            separatorBuilder: (context, index) => const SizedBox(height: 16),
+            itemBuilder: (context, index) => _AppCard(app: apps[index]),
+          );
+        }
+
+        return GridView.builder(
+          itemCount: apps.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: columns,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+            childAspectRatio: 2.6,
           ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF3B82F6).withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Icon(
-                  Icons.android,
-                  color: Color(0xFF3B82F6),
-                  size: 24,
-                ),
+          itemBuilder: (context, index) => _AppCard(app: apps[index]),
+        );
+      },
+    );
+  }
+}
+
+class _AppCard extends StatelessWidget {
+  final AppModel app;
+
+  const _AppCard({required this.app});
+
+  @override
+  Widget build(BuildContext context) {
+    return HoverScale(
+      scale: 1.01,
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.05),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.white.withOpacity(0.1)),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0xFF3B82F6).withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      app.name,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+              child: const Icon(
+                Icons.android,
+                color: Color(0xFF3B82F6),
+                size: 24,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    app.name,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Text(
-                            'Token: ',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white38,
-                            ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(
+                          'Token: ',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white38,
                           ),
-                          const SizedBox(width: 4),
-                          SelectableText(
+                        ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: SelectableText(
                             app.apiKey.isNotEmpty ? app.apiKey : 'No Token',
+                            maxLines: 1,
                             style: const TextStyle(
                               fontFamily: 'Courier',
                               color: Colors.white70,
@@ -386,26 +429,26 @@ class _AppsPageState extends State<AppsPage> {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              IconButton(
-                icon: const Icon(Icons.copy, color: Colors.white30),
-                tooltip: 'Copy Token',
-                onPressed: () {
-                  if (app.apiKey.isNotEmpty) {
-                    Clipboard.setData(ClipboardData(text: app.apiKey));
-                    showSuccessSnackBar(context, 'Token copied to clipboard');
-                  }
-                },
-              ),
-            ],
-          ),
-        );
-      },
+            ),
+            IconButton(
+              icon: const Icon(Icons.copy, color: Colors.white30),
+              tooltip: 'Copy Token',
+              onPressed: () {
+                if (app.apiKey.isNotEmpty) {
+                  Clipboard.setData(ClipboardData(text: app.apiKey));
+                  showSuccessSnackBar(context, 'Token copied to clipboard');
+                }
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

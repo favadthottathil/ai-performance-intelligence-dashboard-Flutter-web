@@ -1,9 +1,11 @@
-import 'package:ai_performance_intelligence_platfrom/features/dashboard/presentation/bloc/dashboard_bloc.dart';
-import 'package:ai_performance_intelligence_platfrom/features/dashboard/presentation/bloc/dashboard_state.dart';
-import 'package:ai_performance_intelligence_platfrom/features/dashboard/presentation/widgets/frame_drop_chart.dart';
-import 'package:ai_performance_intelligence_platfrom/features/dashboard/presentation/widgets/render_time_chart.dart';
-import 'package:ai_performance_intelligence_platfrom/features/dashboard/presentation/widgets/api_latency_chart.dart';
-import 'package:ai_performance_intelligence_platfrom/features/dashboard/presentation/widgets/crash_count_chart.dart';
+import 'package:ai_performance_intelligence_platform/features/dashboard/data/models/analysis_result.dart';
+import 'package:ai_performance_intelligence_platform/features/dashboard/presentation/bloc/dashboard_bloc.dart';
+import 'package:ai_performance_intelligence_platform/features/dashboard/presentation/bloc/dashboard_state.dart';
+import 'package:ai_performance_intelligence_platform/features/dashboard/presentation/widgets/frame_drop_chart.dart';
+import 'package:ai_performance_intelligence_platform/features/dashboard/presentation/widgets/render_time_chart.dart';
+import 'package:ai_performance_intelligence_platform/features/dashboard/presentation/widgets/api_latency_chart.dart';
+import 'package:ai_performance_intelligence_platform/features/dashboard/presentation/widgets/crash_count_chart.dart';
+import 'package:ai_performance_intelligence_platform/features/dashboard/presentation/widgets/stats_overview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -49,7 +51,7 @@ class _DashboardContent extends StatelessWidget {
     final horizontalPadding = screenWidth < 600 ? 12.0 : 24.0;
 
     final analysis = state.analysis;
-    final severity = analysis['severity'];
+    final severity = analysis.severity;
 
     if (state.summary.isEmpty) {
       return Center(
@@ -111,6 +113,8 @@ class _DashboardContent extends StatelessWidget {
         children: [
           // KPIs / Severity Header
           _SeverityCard(severity),
+          const SizedBox(height: 24),
+          StatsOverview(metrics: state.summary),
           const SizedBox(height: 24),
 
           if (isWide)
@@ -182,66 +186,24 @@ class _GlassCard extends StatelessWidget {
 }
 
 class _InsightsPanel extends StatelessWidget {
-  final Map<String, dynamic> analysis;
+  final AnalysisResult analysis;
 
   const _InsightsPanel(this.analysis);
 
   @override
   Widget build(BuildContext context) {
-    List<String> parseList(dynamic list) {
-      if (list is! List) return [];
-      return list
-          .map((e) {
-            if (e is String) return e;
-            if (e is Map) {
-              // Extract screen name cleanly (no braces)
-              final screen = e['screen']?.toString().trim() ?? '';
-
-              // Pick the best descriptive text available
-              final body =
-                  (e['message']?.toString() ??
-                          e['description']?.toString() ??
-                          e['suggestion']?.toString() ??
-                          e['action']?.toString() ??
-                          e['text']?.toString() ??
-                          '')
-                      .trim();
-
-              if (screen.isNotEmpty && body.isNotEmpty) {
-                return '$screen: $body';
-              } else if (body.isNotEmpty) {
-                return body;
-              } else if (screen.isNotEmpty) {
-                return screen;
-              }
-              // Last resort: join all non-null values sensibly
-              return e.values
-                  .where((v) => v != null)
-                  .map((v) => v.toString().trim())
-                  .where((s) => s.isNotEmpty)
-                  .join(' — ');
-            }
-            return e.toString();
-          })
-          .where((s) => s.isNotEmpty)
-          .toList();
-    }
-
-    final issues = parseList(analysis['issues']);
-    final recommendations = parseList(analysis['recommendations']);
-
     return Column(
       children: [
         _Section(
           title: 'Issues Detected',
-          items: issues,
+          items: analysis.issues,
           icon: Icons.warning_amber_rounded,
           isError: true,
         ),
         const SizedBox(height: 24),
         _Section(
           title: 'Recommendations',
-          items: recommendations,
+          items: analysis.recommendations,
           icon: Icons.lightbulb_outline,
         ),
       ],
@@ -349,12 +311,15 @@ class _Section extends StatelessWidget {
                       : const Color(0xFF3B82F6),
                 ),
                 const SizedBox(width: 12),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                Expanded(
+                  child: Text(
+                    title,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ],

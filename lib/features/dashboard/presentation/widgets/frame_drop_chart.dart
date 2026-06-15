@@ -68,6 +68,8 @@ class FrameDropChart extends StatelessWidget {
           SizedBox(
             height: isMobile ? 180 : 250,
             child: BarChart(
+              duration: const Duration(milliseconds: 600),
+              curve: Curves.easeOutCubic,
               BarChartData(
                 maxY: maxY,
                 alignment: BarChartAlignment.start,

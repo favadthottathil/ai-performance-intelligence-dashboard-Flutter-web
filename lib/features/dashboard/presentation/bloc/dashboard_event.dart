@@ -1,4 +1,4 @@
-import 'package:ai_performance_intelligence_platfrom/features/dashboard/presentation/bloc/dashbaord_tab.dart';
+import 'package:ai_performance_intelligence_platform/features/dashboard/presentation/bloc/dashbaord_tab.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class DashboardEvent extends Equatable {

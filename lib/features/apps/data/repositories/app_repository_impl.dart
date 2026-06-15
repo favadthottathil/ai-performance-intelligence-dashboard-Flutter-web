@@ -1,5 +1,5 @@
-import 'package:ai_performance_intelligence_platfrom/features/apps/data/datasoources/app_remote_datasource.dart';
-import 'package:ai_performance_intelligence_platfrom/features/apps/domain/repostiories/app_repository.dart';
+import 'package:ai_performance_intelligence_platform/features/apps/data/datasoources/app_remote_datasource.dart';
+import 'package:ai_performance_intelligence_platform/features/apps/domain/repostiories/app_repository.dart';
 import 'package:injectable/injectable.dart';
 import '../models/app_model.dart';
 

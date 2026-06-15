@@ -1,5 +1,5 @@
-import 'package:ai_performance_intelligence_platfrom/features/auth/data/datasource/auth_remote_datasource.dart';
-import 'package:ai_performance_intelligence_platfrom/features/auth/domain/repository/auth_repository.dart';
+import 'package:ai_performance_intelligence_platform/features/auth/data/datasource/auth_remote_datasource.dart';
+import 'package:ai_performance_intelligence_platform/features/auth/domain/repository/auth_repository.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: AuthRepository)

@@ -1,12 +1,12 @@
-import 'package:ai_performance_intelligence_platfrom/core/storage/token_storage.dart';
-import 'package:ai_performance_intelligence_platfrom/features/auth/domain/usecases/login_usecase.dart';
-import 'package:ai_performance_intelligence_platfrom/features/auth/presentation/bloc/auth_event.dart';
-import 'package:ai_performance_intelligence_platfrom/features/auth/presentation/bloc/auth_state.dart';
+import 'package:ai_performance_intelligence_platform/core/storage/token_storage.dart';
+import 'package:ai_performance_intelligence_platform/features/auth/domain/usecases/login_usecase.dart';
+import 'package:ai_performance_intelligence_platform/features/auth/presentation/bloc/auth_event.dart';
+import 'package:ai_performance_intelligence_platform/features/auth/presentation/bloc/auth_state.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import 'package:ai_performance_intelligence_platfrom/features/auth/domain/usecases/signup_usecase.dart';
+import 'package:ai_performance_intelligence_platform/features/auth/domain/usecases/signup_usecase.dart';
 
 @injectable
 class AuthBloc extends Bloc<AuthEvent, AuthState> {

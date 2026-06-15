@@ -1,4 +1,4 @@
-import 'package:ai_performance_intelligence_platfrom/core/storage/token_storage.dart';
+import 'package:ai_performance_intelligence_platform/core/storage/token_storage.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 

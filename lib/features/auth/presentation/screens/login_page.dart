@@ -1,8 +1,8 @@
-import 'package:ai_performance_intelligence_platfrom/core/utils/snackbar_utils.dart';
-import 'package:ai_performance_intelligence_platfrom/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:ai_performance_intelligence_platfrom/features/auth/presentation/bloc/auth_event.dart';
-import 'package:ai_performance_intelligence_platfrom/features/auth/presentation/bloc/auth_state.dart';
-import 'package:ai_performance_intelligence_platfrom/features/auth/presentation/widgets/password_filed.dart';
+import 'package:ai_performance_intelligence_platform/core/utils/snackbar_utils.dart';
+import 'package:ai_performance_intelligence_platform/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:ai_performance_intelligence_platform/features/auth/presentation/bloc/auth_event.dart';
+import 'package:ai_performance_intelligence_platform/features/auth/presentation/bloc/auth_state.dart';
+import 'package:ai_performance_intelligence_platform/features/auth/presentation/widgets/password_filed.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';

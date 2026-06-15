@@ -1,8 +1,8 @@
-import 'package:ai_performance_intelligence_platfrom/core/di/injection.dart';
-import 'package:ai_performance_intelligence_platfrom/features/apps/presentation/bloc/apps_bloc.dart';
-import 'package:ai_performance_intelligence_platfrom/features/dashboard/presentation/bloc/dashboard_bloc.dart';
-import 'package:ai_performance_intelligence_platfrom/features/dashboard/presentation/bloc/dashboard_event.dart';
-import 'package:ai_performance_intelligence_platfrom/features/dashboard/presentation/pages/dashboard_page.dart';
+import 'package:ai_performance_intelligence_platform/core/di/injection.dart';
+import 'package:ai_performance_intelligence_platform/features/apps/presentation/bloc/apps_bloc.dart';
+import 'package:ai_performance_intelligence_platform/features/dashboard/presentation/bloc/dashboard_bloc.dart';
+import 'package:ai_performance_intelligence_platform/features/dashboard/presentation/bloc/dashboard_event.dart';
+import 'package:ai_performance_intelligence_platform/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

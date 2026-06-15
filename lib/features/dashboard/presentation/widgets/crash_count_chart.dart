@@ -72,6 +72,8 @@ class CrashCountChart extends StatelessWidget {
           SizedBox(
             height: isMobile ? 180 : 250,
             child: BarChart(
+              duration: const Duration(milliseconds: 600),
+              curve: Curves.easeOutCubic,
               BarChartData(
                 maxY: maxY <= 0 ? 5 : maxY, // default height
                 alignment: BarChartAlignment.start,
