@@ -151,7 +151,10 @@ class _AppsPageState extends State<AppsPage> {
               child: ElevatedButton.icon(
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: apiKey));
-                  showSuccessSnackBar(dialogContext, 'Token copied to clipboard');
+                  showSuccessSnackBar(
+                    dialogContext,
+                    'Token copied to clipboard',
+                  );
                 },
                 icon: const Icon(Icons.copy_rounded, size: 20),
                 label: const Text('Copy to Clipboard'),

@@ -40,10 +40,7 @@ class GetDashboardInsights {
       }
     }
 
-    return DashboardInsights(
-      summary: summary,
-      analysis: await guardedAnalysis,
-    );
+    return DashboardInsights(summary: summary, analysis: await guardedAnalysis);
   }
 }
 

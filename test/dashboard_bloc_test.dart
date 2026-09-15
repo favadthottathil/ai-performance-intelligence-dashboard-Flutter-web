@@ -86,9 +86,9 @@ void main() {
     // Default: a stream that stays open and emits nothing. It must not
     // close, or the bloc would treat that as a dropped connection and emit
     // extra isLive transitions in tests that are not about the live feed.
-    when(() => mockWatchMetrics(any())).thenAnswer(
-      (_) => StreamController<Map<String, dynamic>>().stream,
-    );
+    when(
+      () => mockWatchMetrics(any()),
+    ).thenAnswer((_) => StreamController<Map<String, dynamic>>().stream);
   });
 
   group('DashboardBloc', () {
@@ -194,10 +194,7 @@ void main() {
         ).thenAnswer((_) async => insights);
       },
       build: buildBloc,
-      seed: () => loadedState(
-        stateApps: const [appOne, appTwo],
-        isLive: true,
-      ),
+      seed: () => loadedState(stateApps: const [appOne, appTwo], isLive: true),
       act: (bloc) => bloc.add(SelectApp('app-2')),
       expect: () => [
         // Live drops while the new app's stream is being established.
@@ -225,9 +222,9 @@ void main() {
           () => mockGetDashboardInsights('app-1'),
         ).thenAnswer((_) async => insights);
         // A stream that stays open, standing in for a live connection.
-        when(() => mockWatchMetrics('app-1')).thenAnswer(
-          (_) => StreamController<Map<String, dynamic>>().stream,
-        );
+        when(
+          () => mockWatchMetrics('app-1'),
+        ).thenAnswer((_) => StreamController<Map<String, dynamic>>().stream);
       },
       build: buildBloc,
       act: (bloc) => bloc.add(LoadDashboard()),
@@ -245,8 +242,9 @@ void main() {
           () => mockGetDashboardInsights('app-1'),
         ).thenAnswer((_) async => insights);
         // Closes immediately, standing in for a dropped connection.
-        when(() => mockWatchMetrics('app-1'))
-            .thenAnswer((_) => const Stream<Map<String, dynamic>>.empty());
+        when(
+          () => mockWatchMetrics('app-1'),
+        ).thenAnswer((_) => const Stream<Map<String, dynamic>>.empty());
       },
       build: buildBloc,
       act: (bloc) => bloc.add(LoadDashboard()),

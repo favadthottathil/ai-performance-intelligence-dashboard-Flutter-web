@@ -5,11 +5,7 @@ class AppModel extends Equatable {
   final String name;
   final String apiKey;
 
-  const AppModel({
-    required this.id,
-    required this.name,
-    required this.apiKey,
-  });
+  const AppModel({required this.id, required this.name, required this.apiKey});
 
   factory AppModel.fromJson(Map<String, dynamic> json) {
     return AppModel(
