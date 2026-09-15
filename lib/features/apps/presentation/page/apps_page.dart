@@ -70,126 +70,187 @@ class _AppsPageState extends State<AppsPage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocConsumer<AppsBloc, AppsState>(
-      listener: (context, state) {
-        if (state is AppCreated) {
-          showDialog(
-            context: context,
-            builder: (dialogContext) => AlertDialog(
-              backgroundColor: const Color(0xFF1E293B),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
-                side: BorderSide(color: Colors.white.withOpacity(0.1)),
+  /// Shows a freshly issued API key once, for both creation and rotation.
+  void _showApiKeyDialog(
+    BuildContext context, {
+    required String apiKey,
+    required String title,
+    required String body,
+  }) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: const Color(0xFF1E293B),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+          side: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+        ),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: const Color(0xFF10B981).withValues(alpha: 0.2),
+                shape: BoxShape.circle,
               ),
-              title: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF10B981).withOpacity(0.2),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.check_rounded,
-                      color: Color(0xFF10B981),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  const Text(
-                    'API Key Generated',
-                    style: TextStyle(color: Colors.white, fontSize: 20),
-                  ),
-                ],
+              child: const Icon(Icons.check_rounded, color: Color(0xFF10B981)),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                title,
+                style: const TextStyle(color: Colors.white, fontSize: 20),
               ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              body,
+              style: const TextStyle(color: Colors.white70, height: 1.5),
+            ),
+            const SizedBox(height: 24),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+              ),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Your application has been successfully created. Please save this key securely as it will not be shown again in full.',
-                    style: TextStyle(color: Colors.white70, height: 1.5),
-                  ),
-                  const SizedBox(height: 24),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.white.withOpacity(0.1)),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'ACCESS TOKEN',
-                          style: TextStyle(
-                            color: Colors.white38,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: SelectableText(
-                                state.app.apiKey,
-                                style: const TextStyle(
-                                  fontFamily: 'Courier',
-                                  color: Color(0xFF3B82F6),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                    'ACCESS TOKEN',
+                    style: TextStyle(
+                      color: Colors.white38,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.2,
                     ),
                   ),
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        Clipboard.setData(
-                          ClipboardData(text: state.app.apiKey),
-                        );
-                        showSuccessSnackBar(
-                          context,
-                          'Token copied to clipboard',
-                        );
-                      },
-                      icon: const Icon(Icons.copy_rounded, size: 20),
-                      label: const Text('Copy to Clipboard'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: const Color(0xFF0F172A),
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        textStyle: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
+                  const SizedBox(height: 8),
+                  SelectableText(
+                    apiKey,
+                    style: const TextStyle(
+                      fontFamily: 'Courier',
+                      color: Color(0xFF3B82F6),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
                     ),
                   ),
                 ],
               ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(dialogContext),
-                  style: TextButton.styleFrom(
-                    foregroundColor: const Color(0xFF3B82F6),
-                    textStyle: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  child: const Text('Done'),
-                ),
-              ],
             ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Clipboard.setData(ClipboardData(text: apiKey));
+                  showSuccessSnackBar(dialogContext, 'Token copied to clipboard');
+                },
+                icon: const Icon(Icons.copy_rounded, size: 20),
+                label: const Text('Copy to Clipboard'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: const Color(0xFF0F172A),
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  textStyle: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            style: TextButton.styleFrom(
+              foregroundColor: const Color(0xFF3B82F6),
+              textStyle: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            child: const Text('Done'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Rotation invalidates the key every shipped client is using, so it is
+  /// always confirmed explicitly before being dispatched.
+  Future<void> _confirmRotate(AppModel app) async {
+    final bloc = context.read<AppsBloc>();
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: const Color(0xFF1E293B),
+        title: const Text(
+          'Rotate API key?',
+          style: TextStyle(color: Colors.white),
+        ),
+        content: Text(
+          'This issues a new key for "${app.name}" and immediately '
+          'invalidates the current one. Any app still sending metrics with '
+          'the old key will stop being recorded until it is updated.',
+          style: const TextStyle(color: Colors.white70, height: 1.5),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            style: TextButton.styleFrom(foregroundColor: Colors.white70),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFEF4444),
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Rotate key'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed ?? false) {
+      bloc.add(RotateApiKeyRequested(app.id));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<AppsBloc, AppsState>(
+      listenWhen: (previous, current) =>
+          current is AppCreated ||
+          current is ApiKeyRotated ||
+          current is AppsError,
+      listener: (context, state) {
+        if (state is AppCreated) {
+          _showApiKeyDialog(
+            context,
+            apiKey: state.app.apiKey,
+            title: 'API Key Generated',
+            body:
+                'Your application has been created. Save this key securely — '
+                'it will not be shown again in full.',
+          );
+        }
+        if (state is ApiKeyRotated) {
+          _showApiKeyDialog(
+            context,
+            apiKey: state.app.apiKey,
+            title: 'API Key Rotated',
+            body:
+                'A new key has been issued for "${state.app.name}". The '
+                'previous key no longer works — update every app using it.',
           );
         }
         if (state is AppsError) {
@@ -197,10 +258,9 @@ class _AppsPageState extends State<AppsPage> {
         }
       },
       builder: (context, state) {
-        bool hasApps = false; // Default
-        if (state is AppsLoaded && state.apps.isNotEmpty) {
-          hasApps = true;
-        }
+        // Creating an app is always offered once the list has loaded — it
+        // no longer rotates (and thereby breaks) an existing app's key.
+        final hasApps = state is AppsLoaded && state.apps.isNotEmpty;
 
         return Padding(
           padding: const EdgeInsets.all(24),
@@ -331,7 +391,8 @@ class _AppsPageState extends State<AppsPage> {
           return ListView.separated(
             itemCount: apps.length,
             separatorBuilder: (context, index) => const SizedBox(height: 16),
-            itemBuilder: (context, index) => _AppCard(app: apps[index]),
+            itemBuilder: (context, index) =>
+                _AppCard(app: apps[index], onRotate: _confirmRotate),
           );
         }
 
@@ -343,7 +404,8 @@ class _AppsPageState extends State<AppsPage> {
             mainAxisSpacing: 16,
             childAspectRatio: 2.6,
           ),
-          itemBuilder: (context, index) => _AppCard(app: apps[index]),
+          itemBuilder: (context, index) =>
+              _AppCard(app: apps[index], onRotate: _confirmRotate),
         );
       },
     );
@@ -352,8 +414,9 @@ class _AppsPageState extends State<AppsPage> {
 
 class _AppCard extends StatelessWidget {
   final AppModel app;
+  final ValueChanged<AppModel> onRotate;
 
-  const _AppCard({required this.app});
+  const _AppCard({required this.app, required this.onRotate});
 
   @override
   Widget build(BuildContext context) {
@@ -445,6 +508,11 @@ class _AppCard extends StatelessWidget {
                   showSuccessSnackBar(context, 'Token copied to clipboard');
                 }
               },
+            ),
+            IconButton(
+              icon: const Icon(Icons.autorenew_rounded, color: Colors.white30),
+              tooltip: 'Rotate API key',
+              onPressed: () => onRotate(app),
             ),
           ],
         ),

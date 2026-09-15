@@ -3,7 +3,6 @@ import 'package:injectable/injectable.dart';
 import '../../data/models/app_model.dart';
 
 @lazySingleton
-@lazySingleton
 class GetAppsUseCase {
   final AppsRepository repository;
 

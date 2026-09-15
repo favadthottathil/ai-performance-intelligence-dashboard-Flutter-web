@@ -14,6 +14,11 @@ class AppsRepositoryImpl implements AppsRepository {
   }
 
   @override
+  Future<AppModel> rotateApiKey(String appId) {
+    return remote.rotateApiKey(appId);
+  }
+
+  @override
   Future<List<AppModel>> getApps() {
     return remote.getApps();
   }

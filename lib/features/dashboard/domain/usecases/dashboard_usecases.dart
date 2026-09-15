@@ -19,18 +19,41 @@ class GetDashboardInsights {
   GetDashboardInsights(this.repository);
 
   Future<DashboardInsights> call(String appId) async {
-    final summaryRaw = await repository.getSummary(appId);
-    final analysisRaw = await repository.analyze(appId);
+    // The summary is the page's primary content and the AI analysis is
+    // supplementary, so they are issued concurrently rather than serially.
+    final summaryFuture = repository.getSummary(appId);
+    final analysisFuture = repository.analyze(appId);
 
-    final summary = summaryRaw
-        .map<ScreenMetricModel>(
-          (e) => ScreenMetricModel.fromJson(e as Map<String, dynamic>),
-        )
-        .toList();
+    // Attached up front so a failing analysis can never surface as an
+    // unhandled async error while the summary is still in flight.
+    final guardedAnalysis = analysisFuture.then<AnalysisResult>(
+      AnalysisResult.fromJson,
+      onError: (_, __) => AnalysisResult.empty(),
+    );
+
+    final summaryRaw = await summaryFuture;
+
+    final summary = <ScreenMetricModel>[];
+    for (final entry in summaryRaw) {
+      if (entry is Map<String, dynamic>) {
+        summary.add(ScreenMetricModel.fromJson(entry));
+      }
+    }
 
     return DashboardInsights(
       summary: summary,
-      analysis: AnalysisResult.fromJson(analysisRaw),
+      analysis: await guardedAnalysis,
     );
   }
+}
+
+/// Subscribes to the backend's live metrics stream for an app.
+@lazySingleton
+class WatchMetrics {
+  final DashboardRepository repository;
+
+  WatchMetrics(this.repository);
+
+  Stream<Map<String, dynamic>> call(String appId) =>
+      repository.watchMetrics(appId);
 }

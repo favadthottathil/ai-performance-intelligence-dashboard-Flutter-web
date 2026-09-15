@@ -3,6 +3,8 @@ import 'package:ai_performance_intelligence_platform/core/storage/token_storage.
 import 'package:ai_performance_intelligence_platform/core/widgets/live_indicator.dart';
 import 'package:ai_performance_intelligence_platform/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:ai_performance_intelligence_platform/features/dashboard/presentation/bloc/dashboard_event.dart';
+import 'package:ai_performance_intelligence_platform/features/dashboard/presentation/bloc/dashboard_state.dart';
+import 'package:ai_performance_intelligence_platform/features/dashboard/presentation/widgets/app_switcher.dart';
 import 'package:ai_performance_intelligence_platform/features/dashboard/presentation/widgets/dashboard_sidebar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -62,7 +64,15 @@ class DashboardPage extends StatelessWidget {
             : null,
         automaticallyImplyLeading: false,
         actions: [
-          if (!isMobile) const LiveIndicator(),
+          if (!isMobile) const AppSwitcher(),
+          if (!isMobile) const SizedBox(width: 12),
+          // Scoped so a metrics refresh repaints only the status pill
+          // rather than the whole app bar.
+          if (!isMobile)
+            BlocSelector<DashboardBloc, DashboardState, bool>(
+              selector: (state) => state is DashboardLoaded && state.isLive,
+              builder: (context, isLive) => LiveIndicator(isLive: isLive),
+            ),
           if (!isMobile) const SizedBox(width: 12),
           IconButton(
             onPressed: () {

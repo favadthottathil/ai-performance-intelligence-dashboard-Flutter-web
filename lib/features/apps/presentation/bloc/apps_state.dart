@@ -6,9 +6,16 @@ class AppsInitial extends AppsState {}
 
 class AppsLoading extends AppsState {}
 
+/// A newly created app, surfaced so the UI can show its API key once.
 class AppCreated extends AppsState {
   final AppModel app;
   AppCreated(this.app);
+}
+
+/// An app whose key was just rotated, carrying the replacement key.
+class ApiKeyRotated extends AppsState {
+  final AppModel app;
+  ApiKeyRotated(this.app);
 }
 
 class AppsLoaded extends AppsState {

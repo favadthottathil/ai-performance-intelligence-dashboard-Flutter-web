@@ -51,6 +51,8 @@ void main() {
       initialState: DashboardLoaded(
         summary: const [],
         analysis: AnalysisResult.empty(),
+        apps: const [],
+        selectedAppId: 'app-1',
       ),
     );
 
@@ -81,6 +83,8 @@ void main() {
           issues: ['home: frame drops above budget'],
           recommendations: ['Avoid rebuilding large widget trees'],
         ),
+        apps: const [],
+        selectedAppId: 'app-1',
       ),
     );
 

@@ -9,18 +9,25 @@ class AppsRemoteDataSource {
 
   Future<AppModel> createApp(String name) async {
     final res = await dio.post('/apps', data: {'name': name});
-    return AppModel.fromJson(res.data);
+    return AppModel.fromJson(res.data as Map<String, dynamic>);
+  }
+
+  /// Issues a replacement API key for [appId].
+  Future<AppModel> rotateApiKey(String appId) async {
+    final res = await dio.post('/apps/$appId/rotate-key');
+    return AppModel.fromJson(res.data as Map<String, dynamic>);
   }
 
   Future<List<AppModel>> getApps() async {
-    try {
-      final res = await dio.get('/apps');
-      return (res.data as List).map((e) => AppModel.fromJson(e)).toList();
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 404) {
-        return [];
-      }
-      rethrow;
-    }
+    final res = await dio.get('/apps');
+    final data = res.data;
+
+    // The backend returns 200 [] for an account with no apps.
+    if (data is! List) return const [];
+
+    return data
+        .whereType<Map<String, dynamic>>()
+        .map(AppModel.fromJson)
+        .toList();
   }
 }
